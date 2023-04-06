@@ -35,34 +35,34 @@ class TestConduit(object):
 
     # 1 Regisztráció ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-    # def test_registration(self):
-    #     signup_button = self.browser.find_element(By.CSS_SELECTOR, 'a[href="#/register"]')
-    #     signup_button.click()
-    #     time.sleep(2)
-    #
-    #     username_input = WebDriverWait(self.browser, 5).until(
-    #         EC.presence_of_element_located((By.CSS_SELECTOR, 'input[placeholder="Username"]')))
-    #     email_input = WebDriverWait(self.browser, 5).until(
-    #         EC.presence_of_element_located((By.CSS_SELECTOR, 'input[placeholder="Email"]')))
-    #     password_input = WebDriverWait(self.browser, 5).until(
-    #         EC.presence_of_element_located((By.CSS_SELECTOR, 'input[placeholder="Password"]')))
-    #     confirm_signup = WebDriverWait(self.browser, 5).until(
-    #         EC.presence_of_element_located((By.CSS_SELECTOR, 'button[class="btn btn-lg btn-primary pull-xs-right"]')))
-    #
-    #     username_input.send_keys('tesztfelhasznalo10')
-    #     email_input.send_keys('teszt9@teszt.com')
-    #     password_input.send_keys('Teszt456')
-    #     confirm_signup.click()
-    #
-    #
-    #     registration_confirmed = WebDriverWait(self.browser, 5).until(
-    #         EC.presence_of_element_located((By.CSS_SELECTOR, 'div[class="swal-title"]')))
-    #
-    #     assert registration_confirmed.text == "Welcome!"
-    #
-    #     ok_button = WebDriverWait(self.browser, 5).until(
-    #         EC.presence_of_element_located((By.CSS_SELECTOR, 'button[class="swal-button swal-button--confirm"]')))
-    #     ok_button.click()
+    def test_registration(self):
+        signup_button = self.browser.find_element(By.CSS_SELECTOR, 'a[href="#/register"]')
+        signup_button.click()
+        time.sleep(2)
+
+        username_input = WebDriverWait(self.browser, 5).until(
+            EC.presence_of_element_located((By.CSS_SELECTOR, 'input[placeholder="Username"]')))
+        email_input = WebDriverWait(self.browser, 5).until(
+            EC.presence_of_element_located((By.CSS_SELECTOR, 'input[placeholder="Email"]')))
+        password_input = WebDriverWait(self.browser, 5).until(
+            EC.presence_of_element_located((By.CSS_SELECTOR, 'input[placeholder="Password"]')))
+        confirm_signup = WebDriverWait(self.browser, 5).until(
+            EC.presence_of_element_located((By.CSS_SELECTOR, 'button[class="btn btn-lg btn-primary pull-xs-right"]')))
+
+        username_input.send_keys('tesztfelhasznalo10')
+        email_input.send_keys('teszt10@teszt.com')
+        password_input.send_keys('Teszt456')
+        confirm_signup.click()
+
+
+        registration_confirmed = WebDriverWait(self.browser, 5).until(
+            EC.presence_of_element_located((By.CSS_SELECTOR, 'div[class="swal-title"]')))
+
+        assert registration_confirmed.text == "Welcome!"
+
+        ok_button = WebDriverWait(self.browser, 5).until(
+            EC.presence_of_element_located((By.CSS_SELECTOR, 'button[class="swal-button swal-button--confirm"]')))
+        ok_button.click()
 
     # 2 Bejelentkezés ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -95,23 +95,22 @@ class TestConduit(object):
     # 3 Adatkezelési nyilatkozat használata----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
     def test_data_cookies(self):
-        pass
         # Ellenőrzöm hogy megjelent-e az adatkezelési panel.
 
-        # cookie_policy_panel = self.browser.find_element(By.ID, 'cookie-policy-panel')
-        # assert cookie_policy_panel.is_displayed()
-        #
-        # # Kikeresem az elfogadási gomb webelementjét és megnyomom.
-        #
-        # accept_cookies_btn = WebDriverWait(self.browser, 5).until(EC.presence_of_element_located(
-        #     (By.CSS_SELECTOR, 'button[class ="cookie__bar__buttons__button cookie__bar__buttons__button--accept"]')))
-        # time.sleep(1)
-        # accept_cookies_btn.click()
-        # time.sleep(1)
-        #
-        # # Ellenőrzöm, hogy létezik-e még a korábbi adatkezelési panel, vagy már nem található az oldalon.
-        #
-        # assert len(self.browser.find_elements(By.ID, 'cookie-polidy-panel')) == 0
+        cookie_policy_panel = self.browser.find_element(By.ID, 'cookie-policy-panel')
+        assert cookie_policy_panel.is_displayed()
+
+        # Kikeresem az elfogadási gomb webelementjét és megnyomom.
+
+        accept_cookies_btn = WebDriverWait(self.browser, 5).until(EC.presence_of_element_located(
+            (By.CSS_SELECTOR, 'button[class ="cookie__bar__buttons__button cookie__bar__buttons__button--accept"]')))
+        time.sleep(1)
+        accept_cookies_btn.click()
+        time.sleep(1)
+
+        # Ellenőrzöm, hogy létezik-e még a korábbi adatkezelési panel, vagy már nem található az oldalon.
+
+        assert len(self.browser.find_elements(By.ID, 'cookie-polidy-panel')) == 0
 
     # 4 Adatok listázása ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -121,44 +120,44 @@ class TestConduit(object):
     # 5 Több oldalas lista bejárása----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
     def test_all_pages(self):
-        pass
+
         # Bejelentkezés
 
-        # signin_button = self.browser.find_element(By.CSS_SELECTOR, 'a[href = "#/login"]')
-        # signin_button.click()
-        #
-        # email_input = WebDriverWait(self.browser, 5).until(
-        #     EC.presence_of_element_located((By.CSS_SELECTOR, 'input[placeholder="Email"]')))
-        # password_input = WebDriverWait(self.browser, 5).until(
-        #     EC.presence_of_element_located((By.CSS_SELECTOR, 'input[placeholder="Password"]')))
-        # confirm_signin = WebDriverWait(self.browser, 5).until(
-        #     EC.presence_of_element_located((By.CSS_SELECTOR, 'button[class="btn btn-lg btn-primary pull-xs-right"]')))
-        #
-        # email_input.send_keys(self.email)
-        # password_input.send_keys(self.password)
-        # confirm_signin.click()
-        # time.sleep(1)
-        #
-        # accept_cookies_btn = WebDriverWait(self.browser, 5).until(EC.presence_of_element_located(
-        #     (By.CSS_SELECTOR, 'button[class ="cookie__bar__buttons__button cookie__bar__buttons__button--accept"]')))
-        # accept_cookies_btn.click()
-        #
-        # # Megkeresem a lapozó gombok webelementjeit, és végignyomom az összeset
-        #
-        # page_links = self.browser.find_elements(By.CSS_SELECTOR, 'a[class ="page-link"]')
-        #
-        # pages = []
-        # for link in page_links:
-        #     link.click()
-        #     pages.append(link)
+        signin_button = self.browser.find_element(By.CSS_SELECTOR, 'a[href = "#/login"]')
+        signin_button.click()
 
-        # A gombok végignyomása során minden megnyomott elemet egy listába raktam, és ellenőrzöm, hogy ennek a listának a hossza megegyezik-e a talált webelementek listájának hosszával.
+        email_input = WebDriverWait(self.browser, 5).until(
+            EC.presence_of_element_located((By.CSS_SELECTOR, 'input[placeholder="Email"]')))
+        password_input = WebDriverWait(self.browser, 5).until(
+            EC.presence_of_element_located((By.CSS_SELECTOR, 'input[placeholder="Password"]')))
+        confirm_signin = WebDriverWait(self.browser, 5).until(
+            EC.presence_of_element_located((By.CSS_SELECTOR, 'button[class="btn btn-lg btn-primary pull-xs-right"]')))
 
-        # assert len(page_links) == len(pages)
+        email_input.send_keys(self.email)
+        password_input.send_keys(self.password)
+        confirm_signin.click()
+        time.sleep(1)
 
-        # next_button = page_links[0]
-        # while next_button.get_attribute('class') != 'page-item':
-        #     next_button.click()
+        accept_cookies_btn = WebDriverWait(self.browser, 5).until(EC.presence_of_element_located(
+            (By.CSS_SELECTOR, 'button[class ="cookie__bar__buttons__button cookie__bar__buttons__button--accept"]')))
+        accept_cookies_btn.click()
+
+        # Megkeresem a lapozó gombok webelementjeit, és végignyomom az összeset
+
+        page_links = self.browser.find_elements(By.CSS_SELECTOR, 'a[class ="page-link"]')
+
+        pages = []
+        for link in page_links:
+            link.click()
+            pages.append(link)
+
+        #A gombok végignyomása során minden megnyomott elemet egy listába raktam, és ellenőrzöm, hogy ennek a listának a hossza megegyezik-e a talált webelementek listájának hosszával.
+
+        assert len(page_links) == len(pages)
+
+        next_button = page_links[0]
+        while next_button.get_attribute('class') != 'page-item':
+            next_button.click()
 
     # 6 Új adat bevitel ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
