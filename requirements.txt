@@ -1,4 +1,4 @@
 selenium
 pytest
 allure-pytest
-wbdriver-manager
+wedriver-manager
