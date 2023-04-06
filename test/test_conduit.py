@@ -19,6 +19,9 @@ class TestConduit(object):
         s = Service(executable_path=ChromeDriverManager().install())
         o = Options()
         o.add_experimental_option("detach", True)
+        o.add_argument('--headless')
+        o.add_argument('--no-sandbox')
+        o.add_argument('--disable-dev-shm-usage')
 
         self.browser = webdriver.Chrome(service=s, options=o)
 
