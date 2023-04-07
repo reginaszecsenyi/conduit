@@ -31,7 +31,7 @@ class TestConduit(object):
 
     def teardown_method(self):
         time.sleep(1)
-        self.browser.quit()
+        #self.browser.quit()
 
     # 1 Regisztráció ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -86,11 +86,11 @@ class TestConduit(object):
 
         # A bejelentkezett felületen kikeresem a profilomat jelző webelementet, és összehasonlítom, hogy megegyezik-e az email címhez tartozó felhasználónévvel.
 
-        # nav_links = WebDriverWait(self.browser, 5).until(
-        #     EC.presence_of_all_elements_located((By.CSS_SELECTOR, 'a[class="nav-link"]')))
-        # time.sleep(1)
-        # profile = nav_links[2]
-        # assert profile.text == self.username
+        nav_links = WebDriverWait(self.browser, 5).until(
+            EC.presence_of_all_elements_located((By.CSS_SELECTOR, 'a[class="nav-link"]')))
+        time.sleep(1)
+        profile = nav_links[3]
+        assert profile.text == self.username
 
     # 3 Adatkezelési nyilatkozat használata----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -110,7 +110,7 @@ class TestConduit(object):
 
         # Ellenőrzöm, hogy létezik-e még a korábbi adatkezelési panel, vagy már nem található az oldalon.
 
-        assert len(self.browser.find_elements(By.ID, 'cookie-polidy-panel')) == 0
+        assert len(self.browser.find_elements(By.ID, 'cookie-policy-panel')) == 0
 
     # 4 Adatok listázása ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -140,6 +140,11 @@ class TestConduit(object):
 
         accept_cookies_btn = WebDriverWait(self.browser, 5).until(EC.presence_of_element_located(
             (By.CSS_SELECTOR, 'button[class ="cookie__bar__buttons__button cookie__bar__buttons__button--accept"]')))
+        time.sleep(1)
+        #HIBA  selenium.common.exceptions.ElementClickInterceptedException:
+        # Message: element click intercepted:
+        # Element <button class="cookie__bar__buttons__button cookie__bar__buttons__button--accept">...</button> is not clickable at point (172, 569).
+        # Other element would receive the click: <div class="swal-overlay swal-overlay--show-modal" tabindex="-1">...</div>
         accept_cookies_btn.click()
 
         # Megkeresem a lapozó gombok webelementjeit, és végignyomom az összeset
@@ -155,73 +160,70 @@ class TestConduit(object):
 
         assert len(page_links) == len(pages)
 
-        next_button = page_links[0]
-        while next_button.get_attribute('class') != 'page-item':
-            next_button.click()
 
     # 6 Új adat bevitel ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-    # def test_new_data(self):
-    #     # Bejelentkezés
-    #
-    #     signin_button = self.browser.find_element(By.CSS_SELECTOR, 'a[href = "#/login"]')
-    #     signin_button.click()
-    #
-    #     email_input = WebDriverWait(self.browser, 5).until(
-    #         EC.presence_of_element_located((By.CSS_SELECTOR, 'input[placeholder="Email"]')))
-    #     password_input = WebDriverWait(self.browser, 5).until(
-    #         EC.presence_of_element_located((By.CSS_SELECTOR, 'input[placeholder="Password"]')))
-    #     confirm_signin = WebDriverWait(self.browser, 5).until(
-    #         EC.presence_of_element_located((By.CSS_SELECTOR, 'button[class="btn btn-lg btn-primary pull-xs-right"]')))
-    #
-    #     email_input.send_keys(self.email)
-    #     password_input.send_keys(self.password)
-    #     confirm_signin.click()
-    #     time.sleep(1)
-    #
-    #     accept_cookies_btn = WebDriverWait(self.browser, 5).until(EC.presence_of_element_located(
-    #         (By.CSS_SELECTOR, 'button[class ="cookie__bar__buttons__button cookie__bar__buttons__button--accept"]')))
-    #     accept_cookies_btn.click()
-    #
-    #     # Új bejegyzés létrehozása
-    #
-    #     # Kikeresem és rányomok az új bejegyzés létrehozására
-    #
-    #     new_article_btn = self.browser.find_element(By.CSS_SELECTOR, 'a[href="#/editor"]')
-    #     new_article_btn.click()
-    #
-    #     # Elmentem egy dictionaryba a beírandó adatokat, hogy könnyebb legyen hivatkozni rájuk
-    #
-    #     article = {
-    #         "title": "The Title",
-    #         "about": "What the article is about?",
-    #         "full_article": "Write the full article here",
-    #         "tags": "article, tag"
-    #     }
-    #
-    #     # Kikeresem az input mezőket és elküldöm a dictionary megfelelő elemeit kitöltésre, majd rányomok a létrehozás gombra
-    #
-    #     title_input = WebDriverWait(self.browser, 5).until(
-    #         EC.presence_of_element_located((By.CSS_SELECTOR, 'input[placeholder="Article Title"]')))
-    #     about_input = WebDriverWait(self.browser, 5).until(
-    #         EC.presence_of_element_located((By.CSS_SELECTOR, 'input[placeholder="What\'s this article about?"]')))
-    #     full_article_input = WebDriverWait(self.browser, 5).until(EC.presence_of_element_located(
-    #         (By.CSS_SELECTOR, 'textarea[placeholder="Write your article (in markdown)"]')))
-    #     tags_input = WebDriverWait(self.browser, 5).until(
-    #         EC.presence_of_element_located((By.CSS_SELECTOR, 'div[class="vue-tags-input form-control"]')))
-    #     submit_button = WebDriverWait(self.browser, 5).until(
-    #         EC.presence_of_element_located((By.CSS_SELECTOR, 'button[type="submit"]')))
-    #
-    #     title_input.send_keys(article['title'])
-    #     about_input.send_keys(article['about'])
-    #     full_article_input.send_keys(article['full_article'])
-    #     # tags_input.send_keys(article['tags'])          #tag bevitele nem sikerül
-    #     submit_button.click()
-    #
-    #     # Helyes létrehozás esetén a bejegyzés oldalán vagyunk, ahol h1-es elemben jelenik meg a cím, ezt kikeresem, és ellenőrzöm, hogy megyezik-e a korábban megadottal
-    #
-    #     h1_title = WebDriverWait(self.browser, 5).until(EC.presence_of_element_located((By.TAG_NAME, 'h1')))
-    #     assert h1_title.text == article['title']
+    def test_new_data(self):
+        # Bejelentkezés
+
+        signin_button = self.browser.find_element(By.CSS_SELECTOR, 'a[href = "#/login"]')
+        signin_button.click()
+
+        email_input = WebDriverWait(self.browser, 5).until(
+            EC.presence_of_element_located((By.CSS_SELECTOR, 'input[placeholder="Email"]')))
+        password_input = WebDriverWait(self.browser, 5).until(
+            EC.presence_of_element_located((By.CSS_SELECTOR, 'input[placeholder="Password"]')))
+        confirm_signin = WebDriverWait(self.browser, 5).until(
+            EC.presence_of_element_located((By.CSS_SELECTOR, 'button[class="btn btn-lg btn-primary pull-xs-right"]')))
+
+        email_input.send_keys(self.email)
+        password_input.send_keys(self.password)
+        confirm_signin.click()
+        time.sleep(1)
+
+        accept_cookies_btn = WebDriverWait(self.browser, 5).until(EC.presence_of_element_located(
+            (By.CSS_SELECTOR, 'button[class ="cookie__bar__buttons__button cookie__bar__buttons__button--accept"]')))
+        accept_cookies_btn.click()
+
+        # Új bejegyzés létrehozása
+
+        # Kikeresem és rányomok az új bejegyzés létrehozására
+
+        new_article_btn = self.browser.find_element(By.CSS_SELECTOR, 'a[href="#/editor"]')
+        new_article_btn.click()
+
+        # Elmentem egy dictionaryba a beírandó adatokat, hogy könnyebb legyen hivatkozni rájuk
+
+        article = {
+            "title": "The Title",
+            "about": "What the article is about?",
+            "full_article": "Write the full article here",
+            "tags": "article, tag"
+        }
+
+        # Kikeresem az input mezőket és elküldöm a dictionary megfelelő elemeit kitöltésre, majd rányomok a létrehozás gombra
+
+        title_input = WebDriverWait(self.browser, 5).until(
+            EC.presence_of_element_located((By.CSS_SELECTOR, 'input[placeholder="Article Title"]')))
+        about_input = WebDriverWait(self.browser, 5).until(
+            EC.presence_of_element_located((By.CSS_SELECTOR, 'input[placeholder="What\'s this article about?"]')))
+        full_article_input = WebDriverWait(self.browser, 5).until(EC.presence_of_element_located(
+            (By.CSS_SELECTOR, 'textarea[placeholder="Write your article (in markdown)"]')))
+        tags_input = WebDriverWait(self.browser, 5).until(
+            EC.presence_of_element_located((By.CSS_SELECTOR, 'div[class="vue-tags-input form-control"]')))
+        submit_button = WebDriverWait(self.browser, 5).until(
+            EC.presence_of_element_located((By.CSS_SELECTOR, 'button[type="submit"]')))
+
+        title_input.send_keys(article['title'])
+        about_input.send_keys(article['about'])
+        full_article_input.send_keys(article['full_article'])
+        # tags_input.send_keys(article['tags'])          #tag bevitele nem sikerül
+        submit_button.click()
+
+        # Helyes létrehozás esetén a bejegyzés oldalán vagyunk, ahol h1-es elemben jelenik meg a cím, ezt kikeresem, és ellenőrzöm, hogy megyezik-e a korábban megadottal
+
+        h1_title = WebDriverWait(self.browser, 5).until(EC.presence_of_element_located((By.TAG_NAME, 'h1')))
+        assert h1_title.text == article['title']
 
     # 7 Ismételt és sorozatos adatbevitel adatforrásból----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -245,12 +247,31 @@ class TestConduit(object):
     #
     # 11 Kijelentkezés----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-    # def test_logout(self):
-    #     logout_button = self.browser.find_element(By.CSS_SELECTOR, 'a[active-class="active"]')
-    #     logout_button.click()
-    #
-    #     nav_links = WebDriverWait(self.browser, 5).until(
-    #         EC.presence_of_all_elements_located((By.CSS_SELECTOR, 'a[class="nav-link"]')))
-    #     time.sleep(1)
-    #     profile = nav_links[2]
-    #     assert profile.text == self.username
+    def test_logout(self):
+        # Bejelentkezés
+
+        signin_button = self.browser.find_element(By.CSS_SELECTOR, 'a[href = "#/login"]')
+        signin_button.click()
+
+        email_input = WebDriverWait(self.browser, 5).until(
+            EC.presence_of_element_located((By.CSS_SELECTOR, 'input[placeholder="Email"]')))
+        password_input = WebDriverWait(self.browser, 5).until(
+            EC.presence_of_element_located((By.CSS_SELECTOR, 'input[placeholder="Password"]')))
+        confirm_signin = WebDriverWait(self.browser, 5).until(
+            EC.presence_of_element_located((By.CSS_SELECTOR, 'button[class="btn btn-lg btn-primary pull-xs-right"]')))
+
+        email_input.send_keys(self.email)
+        password_input.send_keys(self.password)
+        confirm_signin.click()
+        time.sleep(1)
+
+        #Kikeresem a kijelentkezés gombot
+
+        logout_button = self.browser.find_element(By.CSS_SELECTOR, 'a[active-class="active"]')
+        logout_button.click()
+        #
+        # nav_links = WebDriverWait(self.browser, 5).until(
+        #     EC.presence_of_all_elements_located((By.CSS_SELECTOR, 'a[class="nav-link"]')))
+        # time.sleep(1)
+        # profile = nav_links[3]
+        # assert profile.text == self.username
