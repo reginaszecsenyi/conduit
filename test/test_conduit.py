@@ -88,7 +88,7 @@ class TestConduit(object):
 
         nav_links = WebDriverWait(self.browser, 5).until(
             EC.presence_of_all_elements_located((By.CSS_SELECTOR, 'a[class="nav-link"]')))
-        time.sleep(1)
+        time.sleep(5)
         profile = nav_links[3]
         #ERROR IndexError: list index out of range
         assert profile.text == self.username
