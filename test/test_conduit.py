@@ -82,7 +82,7 @@ class TestConduit(object):
         email_input.send_keys(self.email)
         password_input.send_keys(self.password)
         confirm_signin.click()
-        time.sleep(1)
+        time.sleep(10)
 
         # A bejelentkezett felületen kikeresem a profilomat jelző webelementet, és összehasonlítom, hogy megegyezik-e az email címhez tartozó felhasználónévvel.
 
@@ -174,7 +174,7 @@ class TestConduit(object):
         email_input.send_keys(self.email)
         password_input.send_keys(self.password)
         confirm_signin.click()
-        time.sleep(10)
+        time.sleep(30)
 
         # Új bejegyzés létrehozása
 
@@ -254,7 +254,7 @@ class TestConduit(object):
         email_input.send_keys(self.email)
         password_input.send_keys(self.password)
         confirm_signin.click()
-        time.sleep(10)
+        time.sleep(30)
 
         #Kikeresem a kijelentkezés gombot
 
