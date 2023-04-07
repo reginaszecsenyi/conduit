@@ -85,7 +85,7 @@ class TestConduit(object):
 
         # A bejelentkezett felületen kikeresem a profilomat jelző webelementet, és összehasonlítom, hogy megegyezik-e az email címhez tartozó felhasználónévvel.
 
-        profile = self.browser.find_element(By.CSS_SELECTOR, f'a[href="#/@{self.username}/"]')
+        profile = self.browser.find_element(By.XPATH, f'//a[@href="#/@{self.username}/"]')
         time.sleep(1)
         assert profile.is_displayed
 
@@ -180,7 +180,7 @@ class TestConduit(object):
 
         # Kikeresem és rányomok az új bejegyzés létrehozására
         #timeoutexception
-        new_article_btn = self.browser.find_element(By.CSS_SELECTOR, 'a[href="#/editor"]')
+        new_article_btn = self.browser.find_element(By.XPATH, 'a//[@href="#/editor"]')
         time.sleep(1)
         new_article_btn.click()
 
@@ -259,8 +259,8 @@ class TestConduit(object):
 
         #Kikeresem a kijelentkezés gombot
 
-        #timoutexception
-        logout_button = self.browser.find_element(By.CSS_SELECTOR, 'a[active-class="active"]')
+        #timoutexception #nosuchelementexception
+        logout_button = self.browser.find_element(By.PARTIAL_LINK_TEXT, 'Log out')
         time.sleep(1)
         logout_button.click()
         #
