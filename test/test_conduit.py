@@ -19,9 +19,9 @@ class TestConduit(object):
         s = Service(executable_path=ChromeDriverManager().install())
         o = Options()
         o.add_experimental_option("detach", True)
-        o.add_argument('--headless')
-        o.add_argument('--no-sandbox')
-        o.add_argument('--disable-dev-shm-usage')
+        # o.add_argument('--headless')
+        # o.add_argument('--no-sandbox')
+        # o.add_argument('--disable-dev-shm-usage')
 
         self.browser = webdriver.Chrome(service=s, options=o)
 
@@ -81,12 +81,12 @@ class TestConduit(object):
         email_input.send_keys(self.email)
         password_input.send_keys(self.password)
         confirm_signin.click()
-        time.sleep(1)
+        time.sleep(10)
 
         # A bejelentkezett felületen kikeresem a profilomat jelző webelementet, és összehasonlítom, hogy megegyezik-e az email címhez tartozó felhasználónévvel.
-
+        #nosuchelementexception
         profile = self.browser.find_element(By.XPATH, f'//a[@href="#/@{self.username}/"]')
-        time.sleep(1)
+        time.sleep(10)
         assert profile.is_displayed
 
         # nav_links = WebDriverWait(self.browser, 5).until(
@@ -174,14 +174,14 @@ class TestConduit(object):
         email_input.send_keys(self.email)
         password_input.send_keys(self.password)
         confirm_signin.click()
-        time.sleep(1)
+        time.sleep(10)
 
         # Új bejegyzés létrehozása
 
         # Kikeresem és rányomok az új bejegyzés létrehozására
         #timeoutexception
-        new_article_btn = self.browser.find_element(By.XPATH, 'a//[@href="#/editor"]')
-        time.sleep(1)
+        new_article_btn = self.browser.find_element(By.XPATH, '//a[@href="#/editor"]')
+        time.sleep(10)
         new_article_btn.click()
 
         # Elmentem egy dictionaryba a beírandó adatokat, hogy könnyebb legyen hivatkozni rájuk
@@ -255,13 +255,13 @@ class TestConduit(object):
         email_input.send_keys(self.email)
         password_input.send_keys(self.password)
         confirm_signin.click()
-        time.sleep(1)
+        time.sleep(10)
 
         #Kikeresem a kijelentkezés gombot
 
         #timoutexception #nosuchelementexception
         logout_button = self.browser.find_element(By.PARTIAL_LINK_TEXT, 'Log out')
-        time.sleep(1)
+        time.sleep(10)
         logout_button.click()
         #
         # nav_links = WebDriverWait(self.browser, 5).until(
