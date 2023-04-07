@@ -176,8 +176,8 @@ class TestConduit(object):
         # Új bejegyzés létrehozása
 
         # Kikeresem és rányomok az új bejegyzés létrehozására
-
-        new_article_btn = WebDriverWait(self.browser, 5).until(EC.presence_of_element_located((By.CSS_SELECTOR, 'a[href="#/editor"]')))
+        #timeoutexception
+        new_article_btn = WebDriverWait(self.browser, 10).until(EC.presence_of_element_located((By.CSS_SELECTOR, 'a[href="#/editor"]')))
         new_article_btn.click()
 
         # Elmentem egy dictionaryba a beírandó adatokat, hogy könnyebb legyen hivatkozni rájuk
@@ -255,7 +255,8 @@ class TestConduit(object):
 
         #Kikeresem a kijelentkezés gombot
 
-        logout_button = WebDriverWait(self.browser, 5).until(EC.presence_of_element_located((By.CSS_SELECTOR, 'a[active-class="active"]')))
+        #timoutexception
+        logout_button = WebDriverWait(self.browser, 10).until(EC.presence_of_element_located((By.CSS_SELECTOR, 'a[active-class="active"]')))
         logout_button.click()
         #
         # nav_links = WebDriverWait(self.browser, 5).until(
