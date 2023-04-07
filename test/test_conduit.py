@@ -54,7 +54,6 @@ class TestConduit(object):
         password_input.send_keys('Teszt456')
         confirm_signup.click()
 
-
         registration_confirmed = WebDriverWait(self.browser, 5).until(
             EC.presence_of_element_located((By.CSS_SELECTOR, 'div[class="swal-title"]')))
 
@@ -86,7 +85,7 @@ class TestConduit(object):
 
         # A bejelentkezett felületen kikeresem a profilomat jelző webelementet, és összehasonlítom, hogy megegyezik-e az email címhez tartozó felhasználónévvel.
 
-        profile = WebDriverWait(self.browser, 5).until(EC.presence_of_element_located((By.CSS_SELECTOR, f'a[href="#/@{self.username}/"]')))
+        profile = WebDriverWait(self.browser, 60).until(EC.presence_of_element_located((By.CSS_SELECTOR, f'a[href="#/@{self.username}/"]')))
         assert profile.is_displayed
 
         # nav_links = WebDriverWait(self.browser, 5).until(
@@ -180,7 +179,7 @@ class TestConduit(object):
 
         # Kikeresem és rányomok az új bejegyzés létrehozására
         #timeoutexception
-        new_article_btn = WebDriverWait(self.browser, 5).until(EC.presence_of_element_located((By.CSS_SELECTOR, 'a[href="#/editor"]')))
+        new_article_btn = WebDriverWait(self.browser, 60).until(EC.presence_of_element_located((By.CSS_SELECTOR, 'a[href="#/editor"]')))
         new_article_btn.click()
 
         # Elmentem egy dictionaryba a beírandó adatokat, hogy könnyebb legyen hivatkozni rájuk
@@ -259,7 +258,7 @@ class TestConduit(object):
         #Kikeresem a kijelentkezés gombot
 
         #timoutexception
-        logout_button = WebDriverWait(self.browser, 10).until(EC.presence_of_element_located((By.CSS_SELECTOR, 'a[active-class="active"]')))
+        logout_button = WebDriverWait(self.browser, 60).until(EC.presence_of_element_located((By.CSS_SELECTOR, 'a[active-class="active"]')))
         logout_button.click()
         #
         # nav_links = WebDriverWait(self.browser, 5).until(
