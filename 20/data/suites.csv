@@ -1,7 +1,0 @@
-"Status","Start Time","Stop Time","Duration in ms","Parent Suite","Suite","Sub Suite","Test Class","Test Method","Name","Description"
-"passed","Fri Apr 07 18:20:42 GMT 2023","Fri Apr 07 18:20:43 GMT 2023","1307","test","test_conduit","TestConduit","","","test_all_pages",""
-"broken","Fri Apr 07 18:20:34 GMT 2023","Fri Apr 07 18:20:35 GMT 2023","1423","test","test_conduit","TestConduit","","","test_login",""
-"passed","Fri Apr 07 18:20:27 GMT 2023","Fri Apr 07 18:20:32 GMT 2023","5021","test","test_conduit","TestConduit","","","test_registration",""
-"broken","Fri Apr 07 18:20:46 GMT 2023","Fri Apr 07 18:20:47 GMT 2023","1338","test","test_conduit","TestConduit","","","test_new_data",""
-"broken","Fri Apr 07 18:20:49 GMT 2023","Fri Apr 07 18:20:51 GMT 2023","1329","test","test_conduit","TestConduit","","","test_logout",""
-"passed","Fri Apr 07 18:20:38 GMT 2023","Fri Apr 07 18:20:40 GMT 2023","2087","test","test_conduit","TestConduit","","","test_data_cookies",""
