@@ -90,6 +90,7 @@ class TestConduit(object):
             EC.presence_of_all_elements_located((By.CSS_SELECTOR, 'a[class="nav-link"]')))
         time.sleep(1)
         profile = nav_links[3]
+        #ERROR IndexError: list index out of range
         assert profile.text == self.username
 
     # 3 Adatkezelési nyilatkozat használata----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -138,15 +139,6 @@ class TestConduit(object):
         confirm_signin.click()
         time.sleep(1)
 
-        accept_cookies_btn = WebDriverWait(self.browser, 5).until(EC.presence_of_element_located(
-            (By.CSS_SELECTOR, 'button[class ="cookie__bar__buttons__button cookie__bar__buttons__button--accept"]')))
-        time.sleep(1)
-        #HIBA  selenium.common.exceptions.ElementClickInterceptedException:
-        # Message: element click intercepted:
-        # Element <button class="cookie__bar__buttons__button cookie__bar__buttons__button--accept">...</button> is not clickable at point (172, 569).
-        # Other element would receive the click: <div class="swal-overlay swal-overlay--show-modal" tabindex="-1">...</div>
-        accept_cookies_btn.click()
-
         # Megkeresem a lapozó gombok webelementjeit, és végignyomom az összeset
 
         page_links = self.browser.find_elements(By.CSS_SELECTOR, 'a[class ="page-link"]')
@@ -181,15 +173,11 @@ class TestConduit(object):
         confirm_signin.click()
         time.sleep(1)
 
-        accept_cookies_btn = WebDriverWait(self.browser, 5).until(EC.presence_of_element_located(
-            (By.CSS_SELECTOR, 'button[class ="cookie__bar__buttons__button cookie__bar__buttons__button--accept"]')))
-        accept_cookies_btn.click()
-
         # Új bejegyzés létrehozása
 
         # Kikeresem és rányomok az új bejegyzés létrehozására
 
-        new_article_btn = self.browser.find_element(By.CSS_SELECTOR, 'a[href="#/editor"]')
+        new_article_btn = WebDriverWait(self.browser, 5).until(EC.presence_of_element_located((By.CSS_SELECTOR, 'a[href="#/editor"]')))
         new_article_btn.click()
 
         # Elmentem egy dictionaryba a beírandó adatokat, hogy könnyebb legyen hivatkozni rájuk
@@ -267,7 +255,7 @@ class TestConduit(object):
 
         #Kikeresem a kijelentkezés gombot
 
-        logout_button = self.browser.find_element(By.CSS_SELECTOR, 'a[active-class="active"]')
+        logout_button = WebDriverWait(self.browser, 5).until(EC.presence_of_element_located((By.CSS_SELECTOR, 'a[active-class="active"]')))
         logout_button.click()
         #
         # nav_links = WebDriverWait(self.browser, 5).until(
