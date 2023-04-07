@@ -81,12 +81,12 @@ class TestConduit(object):
         email_input.send_keys(self.email)
         password_input.send_keys(self.password)
         confirm_signin.click()
-        time.sleep(60)
+        time.sleep(1)
 
         # A bejelentkezett felületen kikeresem a profilomat jelző webelementet, és összehasonlítom, hogy megegyezik-e az email címhez tartozó felhasználónévvel.
 
         profile = self.browser.find_element(By.CSS_SELECTOR, f'a[href="#/@{self.username}/"]')
-        time.sleep(10)
+        time.sleep(1)
         assert profile.is_displayed
 
         # nav_links = WebDriverWait(self.browser, 5).until(
@@ -174,14 +174,14 @@ class TestConduit(object):
         email_input.send_keys(self.email)
         password_input.send_keys(self.password)
         confirm_signin.click()
-        time.sleep(60)
+        time.sleep(1)
 
         # Új bejegyzés létrehozása
 
         # Kikeresem és rányomok az új bejegyzés létrehozására
         #timeoutexception
         new_article_btn = self.browser.find_element(By.CSS_SELECTOR, 'a[href="#/editor"]')
-        time.sleep(10)
+        time.sleep(1)
         new_article_btn.click()
 
         # Elmentem egy dictionaryba a beírandó adatokat, hogy könnyebb legyen hivatkozni rájuk
@@ -255,13 +255,13 @@ class TestConduit(object):
         email_input.send_keys(self.email)
         password_input.send_keys(self.password)
         confirm_signin.click()
-        time.sleep(60)
+        time.sleep(1)
 
         #Kikeresem a kijelentkezés gombot
 
         #timoutexception
         logout_button = self.browser.find_element(By.CSS_SELECTOR, 'a[active-class="active"]')
-        time.sleep(10)
+        time.sleep(1)
         logout_button.click()
         #
         # nav_links = WebDriverWait(self.browser, 5).until(
