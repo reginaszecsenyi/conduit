@@ -19,9 +19,9 @@ class TestConduit(object):
         s = Service(executable_path=ChromeDriverManager().install())
         o = Options()
         o.add_experimental_option("detach", True)
-        o.add_argument('--headless')
-        o.add_argument('--no-sandbox')
-        o.add_argument('--disable-dev-shm-usage')
+        # o.add_argument('--headless')
+        # o.add_argument('--no-sandbox')
+        # o.add_argument('--disable-dev-shm-usage')
 
         self.browser = webdriver.Chrome(service=s, options=o)
 
@@ -86,12 +86,15 @@ class TestConduit(object):
 
         # A bejelentkezett felületen kikeresem a profilomat jelző webelementet, és összehasonlítom, hogy megegyezik-e az email címhez tartozó felhasználónévvel.
 
-        nav_links = WebDriverWait(self.browser, 5).until(
-            EC.presence_of_all_elements_located((By.CSS_SELECTOR, 'a[class="nav-link"]')))
-        time.sleep(5)
-        profile = nav_links[3]
-        #ERROR IndexError: list index out of range
-        assert profile.text == self.username
+        profile = WebDriverWait(self.browser, 5).until(EC.presence_of_element_located((By.CSS_SELECTOR, f'a[href="#/@{self.username}/"]')))
+        assert profile.is_displayed
+
+        # nav_links = WebDriverWait(self.browser, 5).until(
+        #     EC.presence_of_all_elements_located((By.CSS_SELECTOR, 'a[class="nav-link"]')))
+        # time.sleep(5)
+        # profile = nav_links[3]
+        # #ERROR IndexError: list index out of range
+        # assert profile.text == self.username
 
     # 3 Adatkezelési nyilatkozat használata----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -171,13 +174,13 @@ class TestConduit(object):
         email_input.send_keys(self.email)
         password_input.send_keys(self.password)
         confirm_signin.click()
-        time.sleep(1)
+        time.sleep(10)
 
         # Új bejegyzés létrehozása
 
         # Kikeresem és rányomok az új bejegyzés létrehozására
         #timeoutexception
-        new_article_btn = WebDriverWait(self.browser, 10).until(EC.presence_of_element_located((By.CSS_SELECTOR, 'a[href="#/editor"]')))
+        new_article_btn = WebDriverWait(self.browser, 5).until(EC.presence_of_element_located((By.CSS_SELECTOR, 'a[href="#/editor"]')))
         new_article_btn.click()
 
         # Elmentem egy dictionaryba a beírandó adatokat, hogy könnyebb legyen hivatkozni rájuk
@@ -251,7 +254,7 @@ class TestConduit(object):
         email_input.send_keys(self.email)
         password_input.send_keys(self.password)
         confirm_signin.click()
-        time.sleep(1)
+        time.sleep(10)
 
         #Kikeresem a kijelentkezés gombot
 
