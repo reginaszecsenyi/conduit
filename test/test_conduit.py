@@ -7,8 +7,8 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
 
-from vizsgaremek_files.basic_functions import login
-from vizsgaremek_files.data_to_import import user_data, article
+from basic_functions import login
+from data_to_import import user_data, article
 
 
 class TestConduit(object):
@@ -48,12 +48,13 @@ class TestConduit(object):
             EC.presence_of_element_located((By.CSS_SELECTOR, 'button[class="btn btn-lg btn-primary pull-xs-right"]')))
 
         username_input.send_keys(user_data['username'])
-        email_input.send_keys('teszt11@teszt.com')
+        email_input.send_keys('teszt12@teszt.com')
         password_input.send_keys(user_data['password'])
         confirm_signup.click()
 
         registration_confirmed = WebDriverWait(self.browser, 5).until(
             EC.presence_of_element_located((By.CSS_SELECTOR, 'div[class="swal-title"]')))
+        time.sleep(1)
 
         assert registration_confirmed.text == "Welcome!"
 
