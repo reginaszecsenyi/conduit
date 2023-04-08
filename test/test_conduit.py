@@ -19,9 +19,9 @@ class TestConduit(object):
         s = Service(executable_path=ChromeDriverManager().install())
         o = Options()
         o.add_experimental_option("detach", True)
-        # o.add_argument('--headless')
-        # o.add_argument('--no-sandbox')
-        # o.add_argument('--disable-dev-shm-usage')
+        o.add_argument('--headless')
+        o.add_argument('--no-sandbox')
+        o.add_argument('--disable-dev-shm-usage')
 
         self.browser = webdriver.Chrome(service=s, options=o)
 
@@ -83,11 +83,15 @@ class TestConduit(object):
         confirm_signin.click()
         time.sleep(10)
 
+        self.browser.save_screenshot('profile.png')
+
         # A bejelentkezett felületen kikeresem a profilomat jelző webelementet, és összehasonlítom, hogy megegyezik-e az email címhez tartozó felhasználónévvel.
         #nosuchelementexception
-        profile = self.browser.find_element(By.XPATH, f'//a[@href="#/@{self.username}/"]')
-        time.sleep(10)
+        # profile = self.browser.find_element(By.XPATH, f'//a[@href="#/@{self.username}/"]')
+        # time.sleep(10)
+        profile = self.browser.find_element(By.PARTIAL_LINK_TEXT, f'{self.username}')
         assert profile.is_displayed
+
 
         # nav_links = WebDriverWait(self.browser, 5).until(
         #     EC.presence_of_all_elements_located((By.CSS_SELECTOR, 'a[class="nav-link"]')))
@@ -178,6 +182,8 @@ class TestConduit(object):
 
         # Új bejegyzés létrehozása
 
+        self.browser.save_screenshot('new_article.png')
+
         # Kikeresem és rányomok az új bejegyzés létrehozására
         #timeoutexception
         new_article_btn = self.browser.find_element(By.XPATH, '//a[@href="#/editor"]')
@@ -258,6 +264,8 @@ class TestConduit(object):
         time.sleep(10)
 
         #Kikeresem a kijelentkezés gombot
+
+        self.browser.save_screenshot('logout.png')
 
         #timoutexception #nosuchelementexception
         logout_button = self.browser.find_element(By.PARTIAL_LINK_TEXT, 'Log out')
