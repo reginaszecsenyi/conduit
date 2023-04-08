@@ -83,7 +83,7 @@ class TestConduit(object):
         confirm_signin.click()
         time.sleep(10)
 
-        self.browser.save_screenshot('profile.png')
+        confirm_signin.send_keys(Keys.PAGE_UP)
 
         # A bejelentkezett felületen kikeresem a profilomat jelző webelementet, és összehasonlítom, hogy megegyezik-e az email címhez tartozó felhasználónévvel.
         #nosuchelementexception
@@ -182,7 +182,7 @@ class TestConduit(object):
 
         # Új bejegyzés létrehozása
 
-        self.browser.save_screenshot('new_article.png')
+        confirm_signin.send_keys(Keys.PAGE_UP)
 
         # Kikeresem és rányomok az új bejegyzés létrehozására
         #timeoutexception
@@ -265,7 +265,8 @@ class TestConduit(object):
 
         #Kikeresem a kijelentkezés gombot
 
-        self.browser.save_screenshot('logout.png')
+        confirm_signin.send_keys(Keys.PAGE_UP)
+        time.sleep(2)
 
         #timoutexception #nosuchelementexception
         logout_button = self.browser.find_element(By.PARTIAL_LINK_TEXT, 'Log out')
