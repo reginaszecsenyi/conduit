@@ -1,4 +1,5 @@
 import time
+import csv
 from selenium import webdriver
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.chrome.service import Service
@@ -29,7 +30,7 @@ class TestConduit(object):
 
     def teardown_method(self):
         time.sleep(1)
-        self.browser.quit()
+        #self.browser.quit()
 
     # 1 Regisztráció ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -84,7 +85,8 @@ class TestConduit(object):
 
         # A bejelentkezett felületen kikeresem a profilomat jelző webelementet, és összehasonlítom, hogy megegyezik-e az email címhez tartozó felhasználónévvel.
 
-        profile = self.browser.find_elements(By.CSS_SELECTOR, 'a[class="nav-link"]')[2]
+        profile = WebDriverWait(self.browser, 5).until(
+            EC.presence_of_element_located((By.XPATH, '//a[@class="nav-link"]')[2]))
         assert profile.is_displayed
         assert profile.text == user_data['username']
 
@@ -140,11 +142,10 @@ class TestConduit(object):
 
         login(self.browser)
 
-        # Új bejegyzés létrehozása
-
         # Kikeresem és rányomok az új bejegyzés létrehozására
 
-        new_article_btn = self.browser.find_element(By.XPATH, '//a[@href="#/editor"]')
+        new_article_btn = WebDriverWait(self.browser, 5).until(
+            EC.presence_of_element_located((By.XPATH, '//a[@href="#/editor"]')))
         time.sleep(1)
         new_article_btn.click()
 
@@ -174,8 +175,60 @@ class TestConduit(object):
 
     # 7 Ismételt és sorozatos adatbevitel adatforrásból----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-    # def test_read_data(self):
-    #     pass
+    def test_read_data(self):
+
+        login(self.browser)
+
+        # Megnyitom a csv fájlt olvasásra
+
+        with open('articles_to_read.csv', 'r', encoding='UTF-8') as file:
+            articles = csv.reader(file, delimiter=',')
+            next(articles)
+
+            #Létrehozok egy listát a címeknek, későbbi ellenőrzéshez
+            title_list = []
+
+            # Ciklus segítségével a csv fájl minden sorához kikeresem a megfelelő mezőket.
+            for row in articles:
+
+                new_article_btn = WebDriverWait(self.browser, 5).until(
+                    EC.presence_of_element_located((By.XPATH, '//a[@href="#/editor"]')))
+                time.sleep(1)
+                new_article_btn.click()
+
+                title_input = WebDriverWait(self.browser, 5).until(
+                    EC.presence_of_element_located((By.CSS_SELECTOR, 'input[placeholder="Article Title"]')))
+                about_input = WebDriverWait(self.browser, 5).until(
+                    EC.presence_of_element_located((By.CSS_SELECTOR, 'input[placeholder="What\'s this article about?"]')))
+                full_article_input = WebDriverWait(self.browser, 5).until(EC.presence_of_element_located(
+                    (By.CSS_SELECTOR, 'textarea[placeholder="Write your article (in markdown)"]')))
+                tags_input = WebDriverWait(self.browser, 5).until(
+                    EC.presence_of_element_located((By.CSS_SELECTOR, 'li[class="ti-new-tag-input-wrapper"]')))
+                submit_button = WebDriverWait(self.browser, 5).until(
+                    EC.presence_of_element_located((By.CSS_SELECTOR, 'button[type="submit"]')))
+
+                # Elmentem a beolvasott sorok első elemét (cím) egy korábban létrehozott listába, későbbi ellenőrzéshez.
+                title_list.append(row[0])
+
+                # Elküldöm a kikeresett mezőkbe a megfelelő adatokat.
+
+                title_input.send_keys(row[0])
+                about_input.send_keys(row[1])
+                full_article_input.send_keys(row[2])
+                # tags_input.send_keys(row[3])
+                submit_button.click()
+
+            # Visszalépek a kezdőoldalra, és a korábban létrehozott címlista elemein végigmegyek, és ellenőrzöm, hogy megegyező elnevezésű elem létezik-e az oldalon, tehát létrejött-e a cikk.
+
+            home_btn = WebDriverWait(self.browser, 5).until(
+                        EC.presence_of_element_located((By.XPATH, '//a[@href="#/"]')))
+            home_btn.click()
+
+            time.sleep(2)
+
+            for title in title_list:
+                assert (self.browser.find_element(By.PARTIAL_LINK_TEXT, f'{title}')).is_displayed()
+
     #
     # 8 Meglévő adat módosítás ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -205,7 +258,8 @@ class TestConduit(object):
 
         #Kikeresem a kijelentkezés gombot
 
-        logout_button = self.browser.find_element(By.PARTIAL_LINK_TEXT, 'Log out')
+        logout_button = WebDriverWait(self.browser, 5).until(
+                        EC.presence_of_element_located((By.PARTIAL_LINK_TEXT, 'Log out')))
         logout_button.click()
         time.sleep(1)
 
