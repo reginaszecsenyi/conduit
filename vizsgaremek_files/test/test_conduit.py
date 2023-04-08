@@ -4,24 +4,22 @@ from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import Select
-from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
 
+from vizsgaremek_files.basic_functions import login
+from vizsgaremek_files.data_to_import import user_data, article
+
 
 class TestConduit(object):
-    username = 'tesztfelhasznalo10'
-    email = 'klviaypoieqopuijxg@tcwlm.com'
-    password = 'Teszt456'
 
     def setup_method(self):
         s = Service(executable_path=ChromeDriverManager().install())
         o = Options()
         o.add_experimental_option("detach", True)
-        o.add_argument('--headless')
-        o.add_argument('--no-sandbox')
-        o.add_argument('--disable-dev-shm-usage')
+        # o.add_argument('--headless')
+        # o.add_argument('--no-sandbox')
+        # o.add_argument('--disable-dev-shm-usage')
 
         self.browser = webdriver.Chrome(service=s, options=o)
 
@@ -31,7 +29,7 @@ class TestConduit(object):
 
     def teardown_method(self):
         time.sleep(1)
-        #self.browser.quit()
+        self.browser.quit()
 
     # 1 Regisztráció ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -49,9 +47,9 @@ class TestConduit(object):
         confirm_signup = WebDriverWait(self.browser, 5).until(
             EC.presence_of_element_located((By.CSS_SELECTOR, 'button[class="btn btn-lg btn-primary pull-xs-right"]')))
 
-        username_input.send_keys('tesztfelhasznalo10')
-        email_input.send_keys('teszt10@teszt.com')
-        password_input.send_keys('Teszt456')
+        username_input.send_keys(user_data['username'])
+        email_input.send_keys('teszt11@teszt.com')
+        password_input.send_keys(user_data['password'])
         confirm_signup.click()
 
         registration_confirmed = WebDriverWait(self.browser, 5).until(
@@ -78,27 +76,17 @@ class TestConduit(object):
         confirm_signin = WebDriverWait(self.browser, 5).until(
             EC.presence_of_element_located((By.CSS_SELECTOR, 'button[class="btn btn-lg btn-primary pull-xs-right"]')))
 
-        email_input.send_keys(self.email)
-        password_input.send_keys(self.password)
+        email_input.send_keys(user_data['email'])
+        password_input.send_keys(user_data['password'])
         confirm_signin.click()
-        time.sleep(10)
-
-        confirm_signin.send_keys(Keys.PAGE_UP)
+        time.sleep(1)
 
         # A bejelentkezett felületen kikeresem a profilomat jelző webelementet, és összehasonlítom, hogy megegyezik-e az email címhez tartozó felhasználónévvel.
-        #nosuchelementexception
-        # profile = self.browser.find_element(By.XPATH, f'//a[@href="#/@{self.username}/"]')
-        # time.sleep(10)
-        profile = self.browser.find_element(By.PARTIAL_LINK_TEXT, f'{self.username}')
+
+        profile = self.browser.find_elements(By.CSS_SELECTOR, 'a[class="nav-link"]')[2]
         assert profile.is_displayed
+        assert profile.text == user_data['username']
 
-
-        # nav_links = WebDriverWait(self.browser, 5).until(
-        #     EC.presence_of_all_elements_located((By.CSS_SELECTOR, 'a[class="nav-link"]')))
-        # time.sleep(5)
-        # profile = nav_links[3]
-        # #ERROR IndexError: list index out of range
-        # assert profile.text == self.username
 
     # 3 Adatkezelési nyilatkozat használata----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -129,22 +117,7 @@ class TestConduit(object):
 
     def test_all_pages(self):
 
-        # Bejelentkezés
-
-        signin_button = self.browser.find_element(By.CSS_SELECTOR, 'a[href = "#/login"]')
-        signin_button.click()
-
-        email_input = WebDriverWait(self.browser, 5).until(
-            EC.presence_of_element_located((By.CSS_SELECTOR, 'input[placeholder="Email"]')))
-        password_input = WebDriverWait(self.browser, 5).until(
-            EC.presence_of_element_located((By.CSS_SELECTOR, 'input[placeholder="Password"]')))
-        confirm_signin = WebDriverWait(self.browser, 5).until(
-            EC.presence_of_element_located((By.CSS_SELECTOR, 'button[class="btn btn-lg btn-primary pull-xs-right"]')))
-
-        email_input.send_keys(self.email)
-        password_input.send_keys(self.password)
-        confirm_signin.click()
-        time.sleep(1)
+        login(self.browser)
 
         # Megkeresem a lapozó gombok webelementjeit, és végignyomom az összeset
 
@@ -163,41 +136,16 @@ class TestConduit(object):
     # 6 Új adat bevitel ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
     def test_new_data(self):
-        # Bejelentkezés
 
-        signin_button = self.browser.find_element(By.CSS_SELECTOR, 'a[href = "#/login"]')
-        signin_button.click()
-
-        email_input = WebDriverWait(self.browser, 5).until(
-            EC.presence_of_element_located((By.CSS_SELECTOR, 'input[placeholder="Email"]')))
-        password_input = WebDriverWait(self.browser, 5).until(
-            EC.presence_of_element_located((By.CSS_SELECTOR, 'input[placeholder="Password"]')))
-        confirm_signin = WebDriverWait(self.browser, 5).until(
-            EC.presence_of_element_located((By.CSS_SELECTOR, 'button[class="btn btn-lg btn-primary pull-xs-right"]')))
-
-        email_input.send_keys(self.email)
-        password_input.send_keys(self.password)
-        confirm_signin.click()
-        time.sleep(10)
+        login(self.browser)
 
         # Új bejegyzés létrehozása
 
-        confirm_signin.send_keys(Keys.PAGE_UP)
-
         # Kikeresem és rányomok az új bejegyzés létrehozására
-        #timeoutexception
+
         new_article_btn = self.browser.find_element(By.XPATH, '//a[@href="#/editor"]')
-        time.sleep(10)
+        time.sleep(1)
         new_article_btn.click()
-
-        # Elmentem egy dictionaryba a beírandó adatokat, hogy könnyebb legyen hivatkozni rájuk
-
-        article = {
-            "title": "The Title",
-            "about": "What the article is about?",
-            "full_article": "Write the full article here",
-            "tags": "article, tag"
-        }
 
         # Kikeresem az input mezőket és elküldöm a dictionary megfelelő elemeit kitöltésre, majd rányomok a létrehozás gombra
 
@@ -208,14 +156,14 @@ class TestConduit(object):
         full_article_input = WebDriverWait(self.browser, 5).until(EC.presence_of_element_located(
             (By.CSS_SELECTOR, 'textarea[placeholder="Write your article (in markdown)"]')))
         tags_input = WebDriverWait(self.browser, 5).until(
-            EC.presence_of_element_located((By.CSS_SELECTOR, 'div[class="vue-tags-input form-control"]')))
+            EC.presence_of_element_located((By.CSS_SELECTOR, 'li[class="ti-new-tag-input-wrapper"]')))
         submit_button = WebDriverWait(self.browser, 5).until(
             EC.presence_of_element_located((By.CSS_SELECTOR, 'button[type="submit"]')))
 
         title_input.send_keys(article['title'])
         about_input.send_keys(article['about'])
         full_article_input.send_keys(article['full_article'])
-        # tags_input.send_keys(article['tags'])          #tag bevitele nem sikerül
+        #tags_input.send_keys(article['tags'])
         submit_button.click()
 
         # Helyes létrehozás esetén a bejegyzés oldalán vagyunk, ahol h1-es elemben jelenik meg a cím, ezt kikeresem, és ellenőrzöm, hogy megyezik-e a korábban megadottal
@@ -231,8 +179,13 @@ class TestConduit(object):
     # 8 Meglévő adat módosítás ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
     # def test_modify_data(self):
-    #     pass
     #
+    #     settings_btn = WebDriverWait(self.browser, 5).until(
+    #         EC.presence_of_element_located((By.PARTIAL_LINK_TEXT, 'Settings')))
+    #     settings_btn.click()
+
+
+
     # 9 Adat vagy adatok törlése ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
     # def test_delete_data(self):
@@ -246,35 +199,14 @@ class TestConduit(object):
     # 11 Kijelentkezés----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
     def test_logout(self):
-        # Bejelentkezés
 
-        signin_button = self.browser.find_element(By.CSS_SELECTOR, 'a[href = "#/login"]')
-        signin_button.click()
-
-        email_input = WebDriverWait(self.browser, 5).until(
-            EC.presence_of_element_located((By.CSS_SELECTOR, 'input[placeholder="Email"]')))
-        password_input = WebDriverWait(self.browser, 5).until(
-            EC.presence_of_element_located((By.CSS_SELECTOR, 'input[placeholder="Password"]')))
-        confirm_signin = WebDriverWait(self.browser, 5).until(
-            EC.presence_of_element_located((By.CSS_SELECTOR, 'button[class="btn btn-lg btn-primary pull-xs-right"]')))
-
-        email_input.send_keys(self.email)
-        password_input.send_keys(self.password)
-        confirm_signin.click()
-        time.sleep(10)
+        login(self.browser)
 
         #Kikeresem a kijelentkezés gombot
 
-        confirm_signin.send_keys(Keys.PAGE_UP)
-        time.sleep(2)
-
-        #timoutexception #nosuchelementexception
         logout_button = self.browser.find_element(By.PARTIAL_LINK_TEXT, 'Log out')
-        time.sleep(10)
         logout_button.click()
-        #
-        # nav_links = WebDriverWait(self.browser, 5).until(
-        #     EC.presence_of_all_elements_located((By.CSS_SELECTOR, 'a[class="nav-link"]')))
-        # time.sleep(1)
-        # profile = nav_links[3]
-        # assert profile.text == self.username
+        time.sleep(1)
+
+        signin_button = self.browser.find_element(By.CSS_SELECTOR, 'a[href = "#/login"]')
+        assert signin_button.is_displayed()
