@@ -10,6 +10,7 @@ from selenium.webdriver.support.wait import WebDriverWait
 
 from basic_functions import login
 from data_to_import import user_data, article
+import allure
 
 
 class TestConduit(object):
@@ -26,7 +27,8 @@ class TestConduit(object):
 
         URL = "http://localhost:1667/#/"
         self.browser.get(URL)
-        self.browser.maximize_window()
+        #self.browser.maximize_window()
+        self.browser.set_window_size(1920, 1080)
 
     def teardown_method(self):
         time.sleep(1)
@@ -85,8 +87,11 @@ class TestConduit(object):
 
         # A bejelentkezett felületen kikeresem a profilomat jelző webelementet, és összehasonlítom, hogy megegyezik-e az email címhez tartozó felhasználónévvel.
 
+        allure.attach(self.browser.get_screenshot_as_png(),
+                    name="test_login",
+                    attachment_type=allure.attachment_type.PNG)
         profile = WebDriverWait(self.browser, 5).until(
-            EC.presence_of_element_located((By.XPATH, '//a[@class="nav-link"]')[2]))
+            EC.presence_of_all_elements_located((By.XPATH, '//a[@class="nav-link"]')[2]))
         assert profile.is_displayed
         assert profile.text == user_data['username']
 
@@ -181,7 +186,8 @@ class TestConduit(object):
 
         # Megnyitom a csv fájlt olvasásra
 
-        with open('articles_to_read.csv', 'r', encoding='UTF-8') as file:
+
+        with open('test/articles_to_read.csv', 'r', encoding='UTF-8') as file:
             articles = csv.reader(file, delimiter=',')
             next(articles)
 
@@ -257,6 +263,9 @@ class TestConduit(object):
         login(self.browser)
 
         #Kikeresem a kijelentkezés gombot
+        allure.attach(self.browser.get_screenshot_as_png(),
+                    name="test_logout",
+                    attachment_type=allure.attachment_type.PNG)
 
         logout_button = WebDriverWait(self.browser, 5).until(
                         EC.presence_of_element_located((By.PARTIAL_LINK_TEXT, 'Log out')))
