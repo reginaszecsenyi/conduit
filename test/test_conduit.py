@@ -1,5 +1,6 @@
 import time
 import csv
+import allure
 from selenium import webdriver
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.chrome.service import Service
@@ -8,9 +9,8 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
 
-from basic_functions import login
-from data_to_import import user_data, article
-import allure
+from basic_functions import login, new_article
+from data_to_import import user_data, article, modified_article
 
 
 class TestConduit(object):
@@ -27,12 +27,11 @@ class TestConduit(object):
 
         URL = "http://localhost:1667/#/"
         self.browser.get(URL)
-        #self.browser.maximize_window()
-        self.browser.set_window_size(1920, 1080)
+        self.browser.maximize_window()
 
     def teardown_method(self):
-        time.sleep(1)
-        #self.browser.quit()
+        # time.sleep(1)
+        self.browser.quit()
 
     # 1 Regisztráció ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -83,18 +82,14 @@ class TestConduit(object):
         email_input.send_keys(user_data['email'])
         password_input.send_keys(user_data['password'])
         confirm_signin.click()
-        time.sleep(1)
+        time.sleep(5)
 
         # A bejelentkezett felületen kikeresem a profilomat jelző webelementet, és összehasonlítom, hogy megegyezik-e az email címhez tartozó felhasználónévvel.
 
-        allure.attach(self.browser.get_screenshot_as_png(),
-                    name="test_login",
-                    attachment_type=allure.attachment_type.PNG)
         profile = WebDriverWait(self.browser, 5).until(
             EC.presence_of_all_elements_located((By.XPATH, '//a[@class="nav-link"]')[2]))
         assert profile.is_displayed
         assert profile.text == user_data['username']
-
 
     # 3 Adatkezelési nyilatkozat használata----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -118,8 +113,18 @@ class TestConduit(object):
 
     # 4 Adatok listázása ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-    # def test_list_data(self):
-    #     pass
+    def test_list_data(self):
+        login(self.browser)
+
+        popular_tags = WebDriverWait(self.browser, 5).until(
+            EC.presence_of_all_elements_located((By.XPATH, '//div/div/a[@class="tag-pill tag-default"]')))
+
+        tag_list = []
+        for tag in popular_tags:
+            tag_list.append(tag.text)
+        print(tag_list)
+
+        assert len(tag_list) != 0
 
     # 5 Több oldalas lista bejárása----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -136,10 +141,9 @@ class TestConduit(object):
             link.click()
             pages.append(link)
 
-        #A gombok végignyomása során minden megnyomott elemet egy listába raktam, és ellenőrzöm, hogy ennek a listának a hossza megegyezik-e a talált webelementek listájának hosszával.
+        # A gombok végignyomása során minden megnyomott elemet egy listába raktam, és ellenőrzöm, hogy ennek a listának a hossza megegyezik-e a talált webelementek listájának hosszával.
 
         assert len(page_links) == len(pages)
-
 
     # 6 Új adat bevitel ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -170,7 +174,7 @@ class TestConduit(object):
         title_input.send_keys(article['title'])
         about_input.send_keys(article['about'])
         full_article_input.send_keys(article['full_article'])
-        #tags_input.send_keys(article['tags'])
+        # tags_input.send_keys(article['tags'])
         submit_button.click()
 
         # Helyes létrehozás esetén a bejegyzés oldalán vagyunk, ahol h1-es elemben jelenik meg a cím, ezt kikeresem, és ellenőrzöm, hogy megyezik-e a korábban megadottal
@@ -186,17 +190,15 @@ class TestConduit(object):
 
         # Megnyitom a csv fájlt olvasásra
 
-
         with open('test/articles_to_read.csv', 'r', encoding='UTF-8') as file:
             articles = csv.reader(file, delimiter=',')
             next(articles)
 
-            #Létrehozok egy listát a címeknek, későbbi ellenőrzéshez
+            # Létrehozok egy listát a címeknek, későbbi ellenőrzéshez
             title_list = []
 
             # Ciklus segítségével a csv fájl minden sorához kikeresem a megfelelő mezőket.
             for row in articles:
-
                 new_article_btn = WebDriverWait(self.browser, 5).until(
                     EC.presence_of_element_located((By.XPATH, '//a[@href="#/editor"]')))
                 time.sleep(1)
@@ -205,7 +207,8 @@ class TestConduit(object):
                 title_input = WebDriverWait(self.browser, 5).until(
                     EC.presence_of_element_located((By.CSS_SELECTOR, 'input[placeholder="Article Title"]')))
                 about_input = WebDriverWait(self.browser, 5).until(
-                    EC.presence_of_element_located((By.CSS_SELECTOR, 'input[placeholder="What\'s this article about?"]')))
+                    EC.presence_of_element_located(
+                        (By.CSS_SELECTOR, 'input[placeholder="What\'s this article about?"]')))
                 full_article_input = WebDriverWait(self.browser, 5).until(EC.presence_of_element_located(
                     (By.CSS_SELECTOR, 'textarea[placeholder="Write your article (in markdown)"]')))
                 tags_input = WebDriverWait(self.browser, 5).until(
@@ -227,7 +230,7 @@ class TestConduit(object):
             # Visszalépek a kezdőoldalra, és a korábban létrehozott címlista elemein végigmegyek, és ellenőrzöm, hogy megegyező elnevezésű elem létezik-e az oldalon, tehát létrejött-e a cikk.
 
             home_btn = WebDriverWait(self.browser, 5).until(
-                        EC.presence_of_element_located((By.XPATH, '//a[@href="#/"]')))
+                EC.presence_of_element_located((By.XPATH, '//a[@href="#/"]')))
             home_btn.click()
 
             time.sleep(2)
@@ -235,40 +238,93 @@ class TestConduit(object):
             for title in title_list:
                 assert (self.browser.find_element(By.PARTIAL_LINK_TEXT, f'{title}')).is_displayed()
 
-    #
     # 8 Meglévő adat módosítás ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-    # def test_modify_data(self):
-    #
-    #     settings_btn = WebDriverWait(self.browser, 5).until(
-    #         EC.presence_of_element_located((By.PARTIAL_LINK_TEXT, 'Settings')))
-    #     settings_btn.click()
+    def test_modify_data(self):
 
+        login(self.browser)
 
+        new_article(self.browser)
+
+        # article_url = article["title"].replace(' ', '-')
+        # self.browser.get(f'http://localhost:1667/#/articles/{article_url.lower()}')
+
+        edit_btn = WebDriverWait(self.browser, 5).until(
+            EC.presence_of_element_located((By.CSS_SELECTOR, 'a[class="btn btn-sm btn-outline-secondary"]')))
+        edit_btn.click()
+
+        title_input = WebDriverWait(self.browser, 5).until(
+            EC.presence_of_element_located((By.CSS_SELECTOR, 'input[placeholder="Article Title"]')))
+        about_input = WebDriverWait(self.browser, 5).until(
+            EC.presence_of_element_located((By.CSS_SELECTOR, 'input[placeholder="What\'s this article about?"]')))
+        full_article_input = WebDriverWait(self.browser, 5).until(EC.presence_of_element_located(
+            (By.CSS_SELECTOR, 'textarea[placeholder="Write your article (in markdown)"]')))
+        tags_input = WebDriverWait(self.browser, 5).until(
+            EC.presence_of_element_located((By.CSS_SELECTOR, 'li[class="ti-new-tag-input-wrapper"]')))
+        submit_button = WebDriverWait(self.browser, 5).until(
+            EC.presence_of_element_located((By.CSS_SELECTOR, 'button[type="submit"]')))
+
+        title_input.clear()
+        about_input.clear()
+        full_article_input.clear()
+        title_input.send_keys(modified_article['title'])
+        about_input.send_keys(modified_article['about'])
+        full_article_input.send_keys(modified_article['full_article'])
+        submit_button.click()
+        time.sleep(1)
+
+        home_btn = WebDriverWait(self.browser, 5).until(
+            EC.presence_of_element_located((By.XPATH, '//a[@href="#/"]')))
+        home_btn.click()
+        time.sleep(2)
+
+        assert self.browser.find_element(By.PARTIAL_LINK_TEXT, f'{modified_article["title"]}').is_displayed()
 
     # 9 Adat vagy adatok törlése ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-    # def test_delete_data(self):
-    #     pass
-    #
+    def test_delete_data(self):
+
+        login(self.browser)
+
+        new_article(self.browser)
+        delete_btn = WebDriverWait(self.browser, 5).until(
+            EC.presence_of_element_located((By.CSS_SELECTOR, 'button[class="btn btn-outline-danger btn-sm"]')))
+        delete_btn.click()
+        time.sleep(5)
+
+        home_btn = WebDriverWait(self.browser, 5).until(
+            EC.presence_of_element_located((By.XPATH, '//a[@href="#/"]')))
+        home_btn.click()
+
+        assert not self.browser.find_element(By.PARTIAL_LINK_TEXT, f'{article["title"]}').is_displayed()
+
     # 10 Adatok lementése felületről ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-    # def test_write_data(self):
-    #     pass
-    #
+    def test_write_data(self):
+
+        login(self.browser)
+
+        popular_tags = WebDriverWait(self.browser, 5).until(
+            EC.presence_of_all_elements_located((By.XPATH, '//div/div/a[@class="tag-pill tag-default"]')))
+
+        tag_list = []
+        for tag in popular_tags:
+            tag_list.append(tag.text)
+        print(tag_list)
+
+        with open('test/tags_to_write', 'w', encoding="UTF-8") as tag_file:
+            tag_file.write(str(tag_list))
+
     # 11 Kijelentkezés----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
     def test_logout(self):
 
         login(self.browser)
 
-        #Kikeresem a kijelentkezés gombot
-        allure.attach(self.browser.get_screenshot_as_png(),
-                    name="test_logout",
-                    attachment_type=allure.attachment_type.PNG)
+        # Kikeresem a kijelentkezés gombot
 
         logout_button = WebDriverWait(self.browser, 5).until(
-                        EC.presence_of_element_located((By.PARTIAL_LINK_TEXT, 'Log out')))
+            EC.presence_of_element_located((By.PARTIAL_LINK_TEXT, 'Log out')))
         logout_button.click()
         time.sleep(1)
 

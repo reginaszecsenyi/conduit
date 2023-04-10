@@ -22,6 +22,28 @@ def login(browser):
     confirm_signin.click()
     time.sleep(2)
 
+def new_article(browser):
+    new_article_btn = WebDriverWait(browser, 5).until(
+        EC.presence_of_element_located((By.XPATH, '//a[@href="#/editor"]')))
+    time.sleep(1)
+    new_article_btn.click()
+
+    title_input = WebDriverWait(browser, 5).until(
+        EC.presence_of_element_located((By.CSS_SELECTOR, 'input[placeholder="Article Title"]')))
+    about_input = WebDriverWait(browser, 5).until(
+        EC.presence_of_element_located((By.CSS_SELECTOR, 'input[placeholder="What\'s this article about?"]')))
+    full_article_input = WebDriverWait(browser, 5).until(EC.presence_of_element_located(
+        (By.CSS_SELECTOR, 'textarea[placeholder="Write your article (in markdown)"]')))
+    tags_input = WebDriverWait(browser, 5).until(
+        EC.presence_of_element_located((By.CSS_SELECTOR, 'li[class="ti-new-tag-input-wrapper"]')))
+    submit_button = WebDriverWait(browser, 5).until(
+        EC.presence_of_element_located((By.CSS_SELECTOR, 'button[type="submit"]')))
+
+    title_input.send_keys(article['title'])
+    about_input.send_keys(article['about'])
+    full_article_input.send_keys(article['full_article'])
+    # tags_input.send_keys(article['tags'])
+    submit_button.click()
 
 def screenshot(browser):
     allure.attach(browser.get_screenshot_as_png(),
