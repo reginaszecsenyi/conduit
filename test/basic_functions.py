@@ -1,4 +1,5 @@
 import time
+import allure
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
@@ -16,12 +17,14 @@ def login(browser):
     confirm_signin = WebDriverWait(browser, 5).until(
         EC.presence_of_element_located((By.CSS_SELECTOR, 'button[class="btn btn-lg btn-primary pull-xs-right"]')))
 
-    time.sleep(1)
     email_input.send_keys(user_data['email'])
-    time.sleep(1)
     password_input.send_keys(user_data['password'])
-    time.sleep(1)
     confirm_signin.click()
-    time.sleep(5)
+    time.sleep(2)
 
+
+def screenshot(browser):
+    allure.attach(browser.get_screenshot_as_png(),
+                  name="test_login",
+                  attachment_type=allure.attachment_type.PNG)
 

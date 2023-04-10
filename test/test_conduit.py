@@ -51,7 +51,7 @@ class TestConduit(object):
             EC.presence_of_element_located((By.CSS_SELECTOR, 'button[class="btn btn-lg btn-primary pull-xs-right"]')))
 
         username_input.send_keys(user_data['username'])
-        email_input.send_keys('teszt12@teszt.com')
+        email_input.send_keys(user_data['email'])
         password_input.send_keys(user_data['password'])
         confirm_signup.click()
 

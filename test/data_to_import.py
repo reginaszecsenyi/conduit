@@ -1,7 +1,7 @@
 
 user_data = {
     'username': 'tesztfelhasznalo10',
-    'email': 'klviaypoieqopuijxg@tcwlm.com',
+    'email': 'teszt10@teszt.com',
     'password': 'Teszt456',
 }
 
