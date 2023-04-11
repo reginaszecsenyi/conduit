@@ -35,14 +35,14 @@ def new_article(browser):
     full_article_input = WebDriverWait(browser, 5).until(EC.presence_of_element_located(
         (By.CSS_SELECTOR, 'textarea[placeholder="Write your article (in markdown)"]')))
     tags_input = WebDriverWait(browser, 5).until(
-        EC.presence_of_element_located((By.CSS_SELECTOR, 'li[class="ti-new-tag-input-wrapper"]')))
+        EC.presence_of_element_located((By.CSS_SELECTOR, 'input[class="ti-new-tag-input ti-valid"]')))
     submit_button = WebDriverWait(browser, 5).until(
         EC.presence_of_element_located((By.CSS_SELECTOR, 'button[type="submit"]')))
 
     title_input.send_keys(article['title'])
     about_input.send_keys(article['about'])
     full_article_input.send_keys(article['full_article'])
-    # tags_input.send_keys(article['tags'])
+    tags_input.send_keys(article['tags'])
     submit_button.click()
 
 def screenshot(browser):
