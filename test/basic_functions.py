@@ -22,7 +22,7 @@ def login(browser):
     confirm_signin.click()
     time.sleep(2)
 
-def new_article(browser):
+def new_article(browser, title, about, full_article, tags):
     new_article_btn = WebDriverWait(browser, 5).until(
         EC.presence_of_element_located((By.XPATH, '//a[@href="#/editor"]')))
     time.sleep(1)
@@ -39,10 +39,11 @@ def new_article(browser):
     submit_button = WebDriverWait(browser, 5).until(
         EC.presence_of_element_located((By.CSS_SELECTOR, 'button[type="submit"]')))
 
-    title_input.send_keys(article['title'])
-    about_input.send_keys(article['about'])
-    full_article_input.send_keys(article['full_article'])
-    tags_input.send_keys(article['tags'])
+
+    title_input.send_keys(title)
+    about_input.send_keys(about)
+    full_article_input.send_keys(full_article)
+    tags_input.send_keys(tags)
     submit_button.click()
 
 def screenshot(browser):

@@ -1,7 +1,7 @@
 
 user_data = {
-    'username': 'tesztfelhasznalo40',
-    'email': 'teszt40@teszt.com',
+    'username': 'tesztfelhasznalo50',
+    'email': 'teszt50@teszt.com',
     'password': 'Teszt456',
 }
 
@@ -17,4 +17,11 @@ modified_article = {
     "about": "This article is modified for a test",
     "full_article": "Not a lorem ipsum article anymore",
     "tags": "article; tag; modified"
+}
+
+deleted_article = {
+    "title": "Article to delete",
+    "about": "This article is to test the delete function",
+    "full_article": "Lets test deleting this article",
+    "tags": "article"
 }

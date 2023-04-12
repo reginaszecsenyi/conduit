@@ -10,7 +10,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
 
 from basic_functions import login, new_article
-from data_to_import import user_data, article, modified_article
+from data_to_import import user_data, article, modified_article, deleted_article
 
 
 class TestConduit(object):
@@ -30,7 +30,6 @@ class TestConduit(object):
         self.browser.maximize_window()
 
     def teardown_method(self):
-        time.sleep(1)
         self.browser.quit()
 
     # 1 Regisztráció helyes adatokkal----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -149,18 +148,21 @@ class TestConduit(object):
 
         login(self.browser)
 
-        # Megkeresem a lapozó gombok webelementjeit, és végignyomom az összeset
+        # Megkeresem a lapozó gombok webelementjeit, és for ciklus segítségével végiterálok rajta
 
         page_links = self.browser.find_elements(By.CSS_SELECTOR, 'a[class ="page-link"]')
 
-        pages = []
+        # Felveszek egy oldal számlálót, amit minden iterációban növelek egyel, és összehasonlítom, hogy a száma megegyezik-e az aktuális lapozó gombon található oldalszámmal
+
+        page_counter = 1
         for link in page_links:
             link.click()
-            pages.append(link)
+            assert int(link.text) == page_counter
+            page_counter += 1
 
-        # A gombok végignyomása során minden megnyomott elemet egy listába raktam, és ellenőrzöm, hogy ennek a listának a hossza megegyezik-e a talált webelementek listájának hosszával.
+        # Összehasonlítom hogy a lapozó gombok listájának hossza megegyezik-e a számlálóval (kivonok 1-et belőle, hiszen az utolsó iteráció végén is hozzáadott még egyet)
 
-        assert len(page_links) == len(pages)
+        assert len(page_links) == page_counter-1
 
     # 6 Új adat bevitel - új bejegyzés létrehozása ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -172,8 +174,8 @@ class TestConduit(object):
 
         new_article_btn = WebDriverWait(self.browser, 5).until(
             EC.presence_of_element_located((By.XPATH, '//a[@href="#/editor"]')))
-        time.sleep(1)
         new_article_btn.click()
+        time.sleep(1)
 
         # Kikeresem az input mezőket és elküldöm az ipmortált data fájlból a megfelelő adatokat kitöltésre, majd rányomok a létrehozás gombra
 
@@ -217,32 +219,10 @@ class TestConduit(object):
             # For ciklus segítségével a fájl minden során végigiterálok, és minden iterációban kikeresem a megfelelő beviteli mezőket
 
             for row in articles:
-                new_article_btn = WebDriverWait(self.browser, 5).until(
-                    EC.presence_of_element_located((By.XPATH, '//a[@href="#/editor"]')))
-                time.sleep(1)
-                new_article_btn.click()
 
-                title_input = WebDriverWait(self.browser, 5).until(
-                    EC.presence_of_element_located((By.CSS_SELECTOR, 'input[placeholder="Article Title"]')))
-                about_input = WebDriverWait(self.browser, 5).until(
-                    EC.presence_of_element_located(
-                        (By.CSS_SELECTOR, 'input[placeholder="What\'s this article about?"]')))
-                full_article_input = WebDriverWait(self.browser, 5).until(EC.presence_of_element_located(
-                    (By.CSS_SELECTOR, 'textarea[placeholder="Write your article (in markdown)"]')))
-                tags_input = WebDriverWait(self.browser, 5).until(
-                    EC.presence_of_element_located((By.CSS_SELECTOR, 'input[class="ti-new-tag-input ti-valid"]')))
-                submit_button = WebDriverWait(self.browser, 5).until(
-                    EC.presence_of_element_located((By.CSS_SELECTOR, 'button[type="submit"]')))
+                new_article(self.browser, row[0], row[1], row[2], row[3])
 
-                # Elküldöm a kikeresett mezőkbe a csv fájl adott sorából a megfelelő indexű adatot, majd rányomok a mentés gombra
-
-                title_input.send_keys(row[0])
-                about_input.send_keys(row[1])
-                full_article_input.send_keys(row[2])
-                tags_input.send_keys(row[3])
-                submit_button.click()
-
-                # Elmentem a beolvasott sor első elemét (cím) egy korábban létrehozott listába, későbbi ellenőrzéshez.
+                # Elmentem a beolvasott sor első elemét (cím) a korábban létrehozott címlistába, későbbi ellenőrzéshez
 
                 title_list.append(row[0])
 
@@ -264,7 +244,7 @@ class TestConduit(object):
         # Bejelentkezek és létrehozok egy új bejegyzést
 
         login(self.browser)
-        new_article(self.browser)
+        new_article(self.browser, article['title'], article['about'], article['full_article'], article['tags'])
 
         # Megkeresem a bejegyzés oldalán állva a szerkesztés gombot és rákattintok.
 
@@ -314,10 +294,7 @@ class TestConduit(object):
         # Bejelentkezek és létrehozok egy új bejegyzést
 
         login(self.browser)
-        new_article(self.browser)
-
-        # article_url = article["title"].replace(' ', '-')
-        # self.browser.get(f'http://localhost:1667/#/articles/{article_url.lower()}')
+        new_article(self.browser, deleted_article['title'], deleted_article['about'], deleted_article['full_article'], deleted_article['tags'])
 
         # Megkeresem a törlés gombot, és rákattintok
 
@@ -327,13 +304,13 @@ class TestConduit(object):
         time.sleep(5)
 
         #Visszanavigálok a főoldalra és ellenőrzöm, hogy találok-e olyan linket az oldalon,
-        # amely szövege megegyezik a módosított bejegyzés címével, tehát eltűnt-e a bejegyzés az oldalról.
+        # amely szövege megegyezik a létrehozott bejegyzés címével, ha nem, akkor törlődött a bejegyzés az oldalról.
 
         home_btn = WebDriverWait(self.browser, 5).until(
             EC.presence_of_element_located((By.XPATH, '//a[@href="#/"]')))
         home_btn.click()
 
-        #assert len(self.browser.find_elements(By.PARTIAL_LINK_TEXT, f'{article["title"]}')) == 0
+        assert len(self.browser.find_elements(By.PARTIAL_LINK_TEXT, f'{deleted_article["title"]}')) == 0
 
     # 10 Adatok lementése felületről - tagek kiíratása csv fájlba ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -342,21 +319,28 @@ class TestConduit(object):
         login(self.browser)
 
         # Elmentem a Popular tags résznél található tagek webelementjeit egy listába.
-        # Létrehozok egy új listát, majd végigiterálok a tagek webelementjein, és mindegyik text-jét elmentem az új listába,
-        # így visszakapom az összes taget szöveges formában egy listába elmentve.
 
         popular_tags = WebDriverWait(self.browser, 5).until(
             EC.presence_of_all_elements_located((By.XPATH, '//div/div/a[@class="tag-pill tag-default"]')))
 
-        tag_list = []
-        for tag in popular_tags:
-            tag_list.append(tag.text)
-        print(tag_list)
-
-        # Megnyitom a fájlt, és beleírom a stringgé konvertált lista tartalmát.
+        # Megnyitom a fájlt, és for ciklus segítségével végigiterálok a popular_tags elemein, és beleírom a fájlba a webelementek text-jeit.
 
         with open('test/tags_to_write', 'w', encoding="UTF-8") as tag_file:
-            tag_file.write(str(tag_list))
+            for tag in popular_tags:
+                tag_file.write(tag.text)
+                tag_file.write("\n")
+
+        # Beolvasom a létrehozott fájlt, a tartalmát elmentem egy listába, majd megnézem, hogy a lista nem üres,
+        # és a hossza megegyezik az eredeti popular_tags lista elemszámával
+
+        tag_list_read = []
+        with open('test/tags_to_write', 'r', encoding="UTF-8") as tag_file_read:
+            tags = csv.reader(tag_file_read)
+            for tag in tags:
+                tag_list_read.append(tag)
+
+        assert len(tag_list_read) > 0
+        assert len(tag_list_read) == len(popular_tags)
 
     # 11 Kijelentkezés----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
