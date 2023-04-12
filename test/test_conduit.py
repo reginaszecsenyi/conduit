@@ -94,7 +94,7 @@ class TestConduit(object):
         # A bejelentkezett felületen kikeresem a profilomat jelző webelementet, és összehasonlítom, hogy megegyezik-e az email címhez tartozó felhasználónévvel.
 
         profile = WebDriverWait(self.browser, 5).until(
-            EC.presence_of_all_elements_located((By.XPATH, '//a[@class="nav-link"]')))[2]
+            EC.presence_of_all_elements_located((By.XPATH, '//a[@class="nav-link"]')))[11]
 
         time.sleep(2)
         assert profile.is_displayed
@@ -162,7 +162,7 @@ class TestConduit(object):
 
         # Összehasonlítom hogy a lapozó gombok listájának hossza megegyezik-e a számlálóval (kivonok 1-et belőle, hiszen az utolsó iteráció végén is hozzáadott még egyet)
 
-        assert len(page_links) == page_counter-1
+        assert len(page_links) == page_counter
 
     # 6 Új adat bevitel - új bejegyzés létrehozása ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -351,7 +351,7 @@ class TestConduit(object):
         # Kikeresem a kijelentkezés gombot, és rákattintok
 
         logout_button = WebDriverWait(self.browser, 5).until(
-            EC.presence_of_element_located((By.PARTIAL_LINK_TEXT, 'Log out')))
+            EC.presence_of_element_located((By.PARTIAL_LINK_TEXT, 'Log ou')))
         logout_button.click()
         time.sleep(1)
 
