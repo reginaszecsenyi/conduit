@@ -1,6 +1,5 @@
 import time
 import csv
-import allure
 from selenium import webdriver
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.chrome.service import Service
@@ -113,7 +112,6 @@ class TestConduit(object):
 
         accept_cookies_btn = WebDriverWait(self.browser, 5).until(EC.presence_of_element_located(
             (By.CSS_SELECTOR, 'button[class ="cookie__bar__buttons__button cookie__bar__buttons__button--accept"]')))
-        time.sleep(1)
         accept_cookies_btn.click()
         time.sleep(1)
 
@@ -148,7 +146,7 @@ class TestConduit(object):
 
         login(self.browser)
 
-        # Megkeresem a lapozó gombok webelementjeit, és for ciklus segítségével végiterálok rajta
+        # Megkeresem a lapozó gombok webelementjeit, és for ciklus segítségével végigiterálok rajta
 
         page_links = self.browser.find_elements(By.CSS_SELECTOR, 'a[class ="page-link"]')
 
@@ -216,7 +214,7 @@ class TestConduit(object):
             # Létrehozok egy listát a címeknek, a későbbi ellenőrzéshez
             title_list = []
 
-            # For ciklus segítségével a fájl minden során végigiterálok, és minden iterációban kikeresem a megfelelő beviteli mezőket
+            # For ciklus segítségével a fájl minden során végigiterálok, és az adott sor adataival új bejegyzést hozok létre
 
             for row in articles:
 
@@ -246,7 +244,7 @@ class TestConduit(object):
         login(self.browser)
         new_article(self.browser, article['title'], article['about'], article['full_article'], article['tags'])
 
-        # Megkeresem a bejegyzés oldalán állva a szerkesztés gombot és rákattintok.
+        # A bejegyzés oldalán állva megkeresem a szerkesztés gombot és rákattintok.
 
         edit_btn = WebDriverWait(self.browser, 5).until(
             EC.presence_of_element_located((By.CSS_SELECTOR, 'a[class="btn btn-sm btn-outline-secondary"]')))
